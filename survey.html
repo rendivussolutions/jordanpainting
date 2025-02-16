@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Survey Form</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" integrity="sha512-DTOQO9RWCH3ppGqcWaEA1BIZOC6xxalwEsw9c2QQeAIftl+Vegovlnee1c9QX4TctnWMn13TZye+giMm8e2LwA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
+    <style>
+        .ms-container * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', system-ui, sans-serif;
+        }
+
+        .ms-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 12px 24px rgba(0,0,0,0.1);
+            width: 100%;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .ms-progress-container {
+            padding: 20px 40px;
+            background: white;
+            position: sticky;
+            top: 0;
+            z-index: 10;
+        }
+
+        .ms-progress-bar {
+            height: 8px;
+            background: #F5F7FA;
+            border-radius: 4px;
+            overflow: hidden;
+        }
+
+        .ms-progress {
+            height: 100%;
+            background: #4A90E2;
+            transition: width 0.5s ease;
+            border-radius: 4px;
+        }
+
+        .ms-step {
+            display: none;
+            padding: 40px;
+            animation: msFadeIn 0.5s ease;
+        }
+
+        @keyframes msFadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .ms-step.active {
+            display: block;
+        }
+
+        .ms-question {
+            margin-bottom: 30px;
+        }
+
+        .ms-question h2 {
+            color: #2C3E50;
+            font-size: 24px;
+            margin-bottom: 20px;
+            line-height: 1.4;
+        }
+
+        .ms-options {
+            display: grid;
+            gap: 16px;
+        }
+
+        .ms-option {
+            background: #F5F7FA;
+            border: 2px solid transparent;
+            border-radius: 12px;
+            padding: 20px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ms-option:hover {
+            transform: translateY(-2px);
+            background: white;
+            border-color: #4A90E2;
+            box-shadow: 0 4px 12px rgba(74, 144, 226, 0.1);
+        }
+
+        .ms-option.selected {
+            background: #4A90E2;
+            color: white;
+            border-color: #4A90E2;
+        }
+
+        .ms-option i {
+            font-size: 24px;
+            width: 24px;
+            text-align: center;
+        }
+
+        .ms-option.selected i {
+            color: white;
+        }
+
+        .ms-input-group {
+            margin-bottom: 20px;
+        }
+
+        .ms-input-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #2C3E50;
+            font-weight: 500;
+        }
+
+        .ms-input-group input {
+            width: 100%;
+            padding: 12px;
+            border: 2px solid #F5F7FA;
+            border-radius: 8px;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .ms-input-group input:focus {
+            outline: none;
+            border-color: #4A90E2;
+        }
+
+        .ms-input-group input.invalid {
+            border-color: #ff4444;
+        }
+
+        .ms-error-message {
+            color: #ff4444;
+            font-size: 12px;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .ms-buttons {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 40px;
+        }
+
+        .ms-button {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .ms-button.next {
+            background: #4A90E2;
+            color: white;
+        }
+
+        .ms-button.prev {
+            background: #F5F7FA;
+            color: #2C3E50;
+        }
+
+        .ms-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        @media (max-width: 600px) {
+            .ms-container {
+                border-radius: 16px;
+            }
+
+            .ms-step {
+                padding: 20px;
+            }
+
+            .ms-question h2 {
+                font-size: 20px;
+            }
+        }
+
+        .ms-option svg {
+            width: 24px;
+            height: 24px;
+        }
+        
+        .ms-option svg path {
+            fill: currentColor;
+        }
+
+        .ms-location-notice {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #FFF8E5;
+            border: 1px solid #FFB020;
+            border-radius: 8px;
+            padding: 16px;
+            margin-bottom: 24px;
+        }
+
+        .ms-location-notice p {
+            color: #B76E00;
+            font-size: 14px;
+            margin: 0;
+        }
+
+        .ms-location-notice svg {
+            flex-shrink: 0;
+        }
+
+        #msZipCode {
+            letter-spacing: 1px;
+        }
+
+        .ms-warning-message {
+            color: #ff4444;
+            background: #ffe5e5;
+            padding: 10px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <div class="ms-container">
+        <div class="ms-progress-container">
+            <div class="ms-progress-bar">
+                <div class="ms-progress" id="msProgress"></div>
+            </div>
+        </div>
+
+        <div class="ms-step active" id="msStep1">
+            <div class="ms-question">
+                <h2>What type of property needs painting?</h2>
+                <div class="ms-warning-message">Please select an option to continue</div>
+                <div class="ms-options">
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M17.9688 8C17.9688 8.5625 17.5 9 16.9688 9H15.9688L16 14C16 14.0938 16 14.1875 16 14.25V14.75C16 15.4688 15.4375 16 14.75 16H14.25C14.1875 16 14.1562 16 14.125 16C14.0938 16 14.0312 16 14 16H13H12.25C11.5312 16 11 15.4688 11 14.75V14V12C11 11.4688 10.5312 11 10 11H8C7.4375 11 7 11.4688 7 12V14V14.75C7 15.4688 6.4375 16 5.75 16H5H4C3.9375 16 3.90625 16 3.84375 16C3.8125 16 3.78125 16 3.75 16H3.25C2.53125 16 2 15.4688 2 14.75V11.25C2 11.25 2 11.2188 2 11.1875V9H1C0.4375 9 0 8.5625 0 8C0 7.71875 0.09375 7.46875 0.3125 7.25L8.3125 0.25C8.53125 0.03125 8.78125 0 9 0C9.21875 0 9.46875 0.0625 9.65625 0.21875L17.625 7.25C17.875 7.46875 18 7.71875 17.9688 8Z"/>
+                        </svg>
+                        <span>Single Family Home</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="12" height="16" viewBox="0 0 12 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M1.5 0H10.5C11.3125 0 12 0.6875 12 1.5V14.5C12 15.3438 11.3125 16 10.5 16H7.5V13.5C7.5 12.6875 6.8125 12 6 12C5.15625 12 4.5 12.6875 4.5 13.5V16H1.5C0.65625 16 0 15.3438 0 14.5V1.5C0 0.6875 0.65625 0 1.5 0ZM2 7.5V8.5C2 8.78125 2.21875 9 2.5 9H3.5C3.75 9 4 8.78125 4 8.5V7.5C4 7.25 3.75 7 3.5 7H2.5C2.21875 7 2 7.25 2 7.5ZM5.5 7C5.21875 7 5 7.25 5 7.5V8.5C5 8.78125 5.21875 9 5.5 9H6.5C6.75 9 7 8.78125 7 8.5V7.5C7 7.25 6.75 7 6.5 7H5.5ZM8 7.5V8.5C8 8.78125 8.21875 9 8.5 9H9.5C9.75 9 10 8.78125 10 8.5V7.5C10 7.25 9.75 7 9.5 7H8.5C8.21875 7 8 7.25 8 7.5ZM2.5 3C2.21875 3 2 3.25 2 3.5V4.5C2 4.78125 2.21875 5 2.5 5H3.5C3.75 5 4 4.78125 4 4.5V3.5C4 3.25 3.75 3 3.5 3H2.5ZM5 3.5V4.5C5 4.78125 5.21875 5 5.5 5H6.5C6.75 5 7 4.78125 7 4.5V3.5C7 3.25 6.75 3 6.5 3H5.5C5.21875 3 5 3.25 5 3.5ZM8.5 3C8.21875 3 8 3.25 8 3.5V4.5C8 4.78125 8.21875 5 8.5 5H9.5C9.75 5 10 4.78125 10 4.5V3.5C10 3.25 9.75 3 9.5 3H8.5Z"/>
+                        </svg>
+                        <span>Apartment/Condo</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="20" height="16" viewBox="0 0 20 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M0 15.25V5.375C0 4.5625 0.46875 3.8125 1.25 3.5L9.625 0.15625C9.84375 0.0625 10.125 0.0625 10.3438 0.15625L18.7188 3.5C19.5 3.8125 20 4.5625 20 5.375V15.25C20 15.6875 19.6562 16 19.25 16H17.75C17.3125 16 17 15.6875 17 15.25V7C17 6.46875 16.5312 6 16 6H4C3.4375 6 3 6.46875 3 7V15.25C3 15.6875 2.65625 16 2.25 16H0.75C0.3125 16 0 15.6875 0 15.25ZM15.25 16H4.75C4.3125 16 4 15.6875 4 15.25V13.5H16V15.25C16 15.6875 15.6562 16 15.25 16ZM4 12.5V10.5H16V12.5H4ZM4 9.5V7H16V9.5H4Z"/>
+                        </svg>
+                        <span>Commercial Property</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ms-buttons">
+                <button class="ms-button next" onclick="msNextStep()">Continue</button>
+            </div>
+        </div>
+
+        <div class="ms-step" id="msStep2">
+            <div class="ms-question">
+                <h2>How many rooms need to be painted?</h2>
+                <div class="ms-warning-message">Please select an option to continue</div>
+                <div class="ms-options">
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M3 2C3 0.90625 3.875 0 5 0H13C14.0938 0 15 0.90625 15 2V14H17C17.5312 14 18 14.4688 18 15C18 15.5625 17.5312 16 17 16H13.5H4.5H1C0.4375 16 0 15.5625 0 15C0 14.4688 0.4375 14 1 14H3V2ZM12 9C12.5312 9 13 8.5625 13 8C13 7.46875 12.5312 7 12 7C11.4375 7 11 7.46875 11 8C11 8.5625 11.4375 9 12 9Z"/>
+                        </svg>
+                        <span>1-2 Rooms</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M10 1V15V16H9H3H1C0.4375 16 0 15.5625 0 15C0 14.4688 0.4375 14 1 14H2V2.90625C2 2.21875 2.46875 1.625 3.125 1.4375L8.75 0.03125C9.03125 -0.03125 9.34375 0.03125 9.59375 0.21875C9.84375 0.40625 10 0.71875 10 1ZM8 8C8 7.46875 7.65625 7 7.25 7C6.8125 7 6.5 7.46875 6.5 8C6.5 8.5625 6.8125 9 7.25 9C7.65625 9 8 8.5625 8 8ZM11 4V2H14C15.0938 2 16 2.90625 16 4V14H17C17.5312 14 18 14.4688 18 15C18 15.5625 17.5312 16 17 16H15C14.4375 16 14 15.5625 14 15V4H11Z"/>
+                        </svg>
+                        <span>3-4 Rooms</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="18" height="16" viewBox="0 0 18 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M16.9688 9H15.9688L16 14C16 15.125 15.125 16 14 16H4C2.875 16 2 15.125 2 14V9H1C0.4375 9 0 8.5625 0 8C0 7.71875 0.09375 7.46875 0.3125 7.25L8.3125 0.25C8.53125 0.03125 8.78125 0 9 0C9.21875 0 9.46875 0.0625 9.65625 0.21875L17.625 7.25C17.875 7.46875 18 7.71875 17.9688 8C17.9688 8.5625 17.5 9 16.9688 9ZM8 6.5V8H6.5C6.21875 8 6 8.25 6 8.5V9.5C6 9.78125 6.21875 10 6.5 10H8V11.5C8 11.7812 8.21875 12 8.5 12H9.5C9.75 12 10 11.7812 10 11.5V10H11.5C11.75 10 12 9.78125 12 9.5V8.5C12 8.25 11.75 8 11.5 8H10V6.5C10 6.25 9.75 6 9.5 6H8.5C8.21875 6 8 6.25 8 6.5Z"/>
+                        </svg>
+                        <span>5+ Rooms</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ms-buttons">
+                <button class="ms-button prev" onclick="msPrevStep()">Back</button>
+                <button class="ms-button next" onclick="msNextStep()">Continue</button>
+            </div>
+        </div>
+
+        <div class="ms-step" id="msStep3">
+            <div class="ms-question">
+                <h2>When would you like the work to begin?</h2>
+                <div class="ms-warning-message">Please select an option to continue</div>
+                <div class="ms-options">
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4.96875 0.1875C5.21875 -0.03125 5.59375 -0.03125 5.84375 0.1875C6.6875 1 7.5 1.875 8.25 2.8125C8.59375 2.375 9 1.875 9.40625 1.46875C9.65625 1.25 10.0312 1.25 10.2812 1.46875C11.375 2.5 12.2812 3.875 12.9375 5.15625C13.5625 6.4375 14 7.75 14 8.65625C14 12.6562 10.875 16 7 16C3.0625 16 0 12.6562 0 8.65625C0 7.46875 0.53125 6 1.40625 4.53125C2.28125 3.0625 3.5 1.53125 4.96875 0.1875ZM7.03125 13C7.84375 13 8.53125 12.7812 9.1875 12.3438C10.5 11.4375 10.8438 9.59375 10.0625 8.15625C9.9375 7.875 9.5625 7.84375 9.375 8.09375L8.5625 9C8.375 9.25 8 9.25 7.8125 9C7.28125 8.34375 6.375 7.15625 5.84375 6.5C5.65625 6.25 5.28125 6.25 5.0625 6.5C4 7.8125 3.46875 8.65625 3.46875 9.59375C3.5 11.75 5.0625 13 7.03125 13Z"/>
+                        </svg>
+                        <span>As soon as possible</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="17" height="16" viewBox="0 0 17 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M9 0C11.8438 0 14.4688 1.53125 15.9062 4C17.3438 6.5 17.3438 9.53125 15.9062 12C14.4688 14.5 11.8438 16 9 16C6.125 16 3.5 14.5 2.0625 12C0.625 9.53125 0.625 6.5 2.0625 4C3.5 1.53125 6.125 0 9 0ZM8.25 3.75V8C8.25 8.25 8.375 8.5 8.5625 8.625L11.5625 10.625C11.9062 10.875 12.375 10.7812 12.625 10.4375C12.8438 10.0938 12.75 9.625 12.4062 9.375L9.75 7.625V3.75C9.75 3.34375 9.40625 3 9 3C8.5625 3 8.25 3.34375 8.25 3.75Z"/>
+                        </svg>
+                        <span>Within 1 month</span>
+                    </div>
+                    <div class="ms-option" onclick="msSelectOption(this)">
+                        <svg width="14" height="16" viewBox="0 0 14 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M4 0C4.53125 0 5 0.46875 5 1V2H9V1C9 0.46875 9.4375 0 10 0C10.5312 0 11 0.46875 11 1V2H12.5C13.3125 2 14 2.6875 14 3.5V5H0V3.5C0 2.6875 0.65625 2 1.5 2H3V1C3 0.46875 3.4375 0 4 0ZM0 6H14V14.5C14 15.3438 13.3125 16 12.5 16H1.5C0.65625 16 0 15.3438 0 14.5V6ZM2 8.5V9.5C2 9.78125 2.21875 10 2.5 10H3.5C3.75 10 4 9.78125 4 9.5V8.5C4 8.25 3.75 8 3.5 8H2.5C2.21875 8 2 8.25 2 8.5ZM6 8.5V9.5C6 9.78125 6.21875 10 6.5 10H7.5C7.75 10 8 9.78125 8 9.5V8.5C8 8.25 7.75 8 7.5 8H6.5C6.21875 8 6 8.25 6 8.5ZM10.5 8C10.2188 8 10 8.25 10 8.5V9.5C10 9.78125 10.2188 10 10.5 10H11.5C11.75 10 12 9.78125 12 9.5V8.5C12 8.25 11.75 8 11.5 8H10.5ZM2 12.5V13.5C2 13.7812 2.21875 14 2.5 14H3.5C3.75 14 4 13.7812 4 13.5V12.5C4 12.25 3.75 12 3.5 12H2.5C2.21875 12 2 12.25 2 12.5ZM6.5 12C6.21875 12 6 12.25 6 12.5V13.5C6 13.7812 6.21875 14 6.5 14H7.5C7.75 14 8 13.7812 8 13.5V12.5C8 12.25 7.75 12 7.5 12H6.5ZM10 12.5V13.5C10 13.7812 10.2188 14 10.5 14H11.5C11.75 14 12 13.7812 12 13.5V12.5C12 12.25 11.75 12 11.5 12H10.5C10.2188 12 10 12.25 10 12.5Z"/>
+                        </svg>
+                        <span>In 1-2 months</span>
+                    </div>
+                </div>
+            </div>
+            <div class="ms-buttons">
+                <button class="ms-button prev" onclick="msPrevStep()">Back</button>
+                <button class="ms-button next" onclick="msNextStep()">Continue</button>
+            </div>
+        </div>
+
+        <div class="ms-step" id="msStep4">
+            <div class="ms-question">
+                <h2>Where is your project located?</h2>
+                <div class="ms-location-notice">
+                    <svg width="20" height="20" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+                        <path d="M10 0C4.48 0 0 4.48 0 10C0 15.52 4.48 20 10 20C15.52 20 20 15.52 20 10C20 4.48 15.52 0 10 0ZM11 15H9V13H11V15ZM11 11H9V5H11V11Z" fill="#FFB020"/>
+                    </svg>
+                    <p>Please note: We currently serve New Jersey area only</p>
+                </div>
+                <div class="ms-input-group">
+                    <label for="msCity">City<span class="required">*</span></label>
+                    <input type="text" id="msCity" placeholder="Enter your city" required>
+                    <div class="ms-error-message" id="cityError">Please enter your city</div>
+                </div>
+                <div class="ms-input-group">
+                    <label for="msZipCode">ZIP Code<span class="required">*</span></label>
+                    <input type="text" id="msZipCode" placeholder="Enter ZIP code" maxlength="5" required>
+                    <div class="ms-error-message" id="zipError">Please enter a valid ZIP code</div>
+                </div>
+            </div>
+            <div class="ms-buttons">
+                <button class="ms-button prev" onclick="msPrevStep()">Back</button>
+                <button class="ms-button next" onclick="msNextStep()">Continue</button>
+            </div>
+        </div>
+
+        <div class="ms-step" id="msStep5">
+            <div class="ms-question">
+                <h2>Your Contact Information</h2>
+                <div class="ms-input-group">
+                    <label for="msName">Full Name<span class="required">*</span></label>
+                    <input type="text" id="msName" placeholder="Enter your full name" required>
+                    <div class="ms-error-message" id="nameError">Please enter your full name</div>
+                </div>
+                <div class="ms-input-group">
+                    <label for="msEmail">Email Address<span class="required">*</span></label>
+                    <input type="email" id="msEmail" placeholder="Enter your email" required>
+                    <div class="ms-error-message" id="emailError">Please enter a valid email address</div>
+                </div>
+                <div class="ms-input-group">
+                    <label for="msPhone">Phone Number<span class="required">*</span></label>
+                    <input type="tel" id="msPhone" placeholder="(___) ___-____" required>
+                    <div class="ms-error-message" id="phoneError">Please enter a valid US phone number</div>
+                </div>
+            </div>
+            <div class="ms-buttons">
+                <button class="ms-button prev" onclick="msPrevStep()">Back</button>
+                <button class="ms-button next" onclick="msSubmitForm()">Submit</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let msCurrentStep = 1;
+        const msTotalSteps = 5;
+
+        function msUpdateProgress() {
+            const progress = ((msCurrentStep - 1) / (msTotalSteps - 1)) * 100;
+            document.getElementById('msProgress').style.width = `${progress}%`;
+        }
+
+        function msSelectOption(element) {
+            const options = element.parentElement.getElementsByClassName('ms-option');
+            Array.from(options).forEach(option => option.classList.remove('selected'));
+            element.classList.add('selected');
+            // Hide warning message when an option is selected
+            const warningMessage = element.closest('.ms-question').querySelector('.ms-warning-message');
+            if (warningMessage) {
+                warningMessage.style.display = 'none';
+            }
+        }
+
+        function msShowStep(step) {
+            document.querySelectorAll('.ms-step').forEach(s => s.classList.remove('active'));
+            document.getElementById(`msStep${step}`).classList.add('active');
+            msUpdateProgress();
+        }
+
+        function msValidateStep() {
+            const currentStepElement = document.getElementById(`msStep${msCurrentStep}`);
+            
+            // For steps 1-3 (options selection)
+            if (msCurrentStep <= 3) {
+                const selectedOption = currentStepElement.querySelector('.ms-option.selected');
+                if (!selectedOption) {
+                    const warningMessage = currentStepElement.querySelector('.ms-warning-message');
+                    warningMessage.style.display = 'block';
+                    return false;
+                }
+                return true;
+            }
+            
+            // For step 4 (location)
+            if (msCurrentStep === 4) {
+                const city = document.getElementById('msCity');
+                const zipCode = document.getElementById('msZipCode');
+                let isValid = true;
+
+                if (!city.value.trim()) {
+                    city.classList.add('invalid');
+                    document.getElementById('cityError').style.display = 'block';
+                    isValid = false;
+                }
+
+                if (!zipCode.value.trim() || zipCode.value.length !== 5) {
+                    zipCode.classList.add('invalid');
+                    document.getElementById('zipError').style.display = 'block';
+                    isValid = false;
+                }
+
+                return isValid;
+            }
+
+            return true;
+        }
+
+        function msNextStep() {
+            if (!msValidateStep()) {
+                return;
+            }
+            if (msCurrentStep < msTotalSteps) {
+                msCurrentStep++;
+                msShowStep(msCurrentStep);
+            }
+        }
+
+        function msPrevStep() {
+            if (msCurrentStep > 1) {
+                msCurrentStep--;
+                msShowStep(msCurrentStep);
+            }
+        }
+
+        function msValidateEmail(email) {
+            const re = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+            return re.test(String(email).toLowerCase());
+        }
+
+        function formatPhoneNumber(value) {
+            if (!value) return value;
+            const phoneNumber = value.replace(/[^\d]/g, '');
+            const phoneNumberLength = phoneNumber.length;
+
+            if (phoneNumberLength <= 3) return `(${phoneNumber}`;
+            if (phoneNumberLength <= 6) return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3)}`;
+            return `(${phoneNumber.slice(0, 3)}) ${phoneNumber.slice(3, 6)}-${phoneNumber.slice(6, 10)}`;
+        }
+
+        function validatePhone(phone) {
+            const cleaned = phone.replace(/[^\d]/g, '');
+            return cleaned.length === 10;
+        }
+
+        document.getElementById('msPhone').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/[^\d]/g, '');
+            if (value.length > 10) value = value.slice(0, 10);
+            e.target.value = formatPhoneNumber(value);
+
+            const isValid = validatePhone(value);
+            e.target.classList.toggle('invalid', !isValid);
+            document.getElementById('phoneError').style.display = isValid ? 'none' : 'block';
+        });
+
+        document.getElementById('msEmail').addEventListener('input', function(e) {
+            const isValid = msValidateEmail(e.target.value);
+            e.target.classList.toggle('invalid', !isValid);
+            document.getElementById('emailError').style.display = isValid ? 'none' : 'block';
+        });
+
+        document.getElementById('msName').addEventListener('input', function(e) {
+            const isValid = e.target.value.trim().length > 0;
+            e.target.classList.toggle('invalid', !isValid);
+            document.getElementById('nameError').style.display = isValid ? 'none' : 'block';
+        });
+
+        document.getElementById('msZipCode').addEventListener('input', function(e) {
+            let value = e.target.value.replace(/\D/g, '');
+            if (value.length > 5) value = value.slice(0, 5);
+            e.target.value = value;
+            
+            const isValid = value.length === 5;
+            e.target.classList.toggle('invalid', !isValid);
+            document.getElementById('zipError').style.display = isValid ? 'none' : 'block';
+        });
+
+        document.getElementById('msCity').addEventListener('input', function(e) {
+            const isValid = e.target.value.trim().length > 0;
+            e.target.classList.toggle('invalid', !isValid);
+            document.getElementById('cityError').style.display = isValid ? 'none' : 'block';
+        });
+
+        function msSubmitForm() {
+            const name = document.getElementById('msName');
+            const email = document.getElementById('msEmail');
+            const phone = document.getElementById('msPhone');
+            const city = document.getElementById('msCity');
+            const zipCode = document.getElementById('msZipCode');
+            let isValid = true;
+
+            if (!name.value.trim()) {
+                name.classList.add('invalid');
+                document.getElementById('nameError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!msValidateEmail(email.value)) {
+                email.classList.add('invalid');
+                document.getElementById('emailError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!validatePhone(phone.value)) {
+                phone.classList.add('invalid');
+                document.getElementById('phoneError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!city.value.trim()) {
+                city.classList.add('invalid');
+                document.getElementById('cityError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!zipCode.value.trim() || zipCode.value.length !== 5) {
+                zipCode.classList.add('invalid');
+                document.getElementById('zipError').style.display = 'block';
+                isValid = false;
+            }
+
+            if (!isValid) {
+                return;
+            }
+
+            // Get selected options from previous steps
+            const propertyType = document.querySelector('#msStep1 .ms-option.selected span')?.textContent || '';
+            const roomCount = document.querySelector('#msStep2 .ms-option.selected span')?.textContent || '';
+            const timeframe = document.querySelector('#msStep3 .ms-option.selected span')?.textContent || '';
+
+            // Prepare data for webhook
+            const formData = {
+                propertyType,
+                roomCount,
+                timeframe,
+                location: {
+                    city: city.value.trim(),
+                    zipCode: zipCode.value.trim()
+                },
+                contactInfo: {
+                    name: name.value.trim(),
+                    email: email.value.trim(),
+                    phone: phone.value.trim(),
+                    formattedPhone: '+1 ' + phone.value.trim().replace(/[\(\)]/g, '').replace(' ', '-')
+                }
+            };
+
+            // Disable submit button and show loading state
+            const submitButton = document.querySelector('#msStep5 .ms-button.next');
+            submitButton.disabled = true;
+            submitButton.textContent = 'Submitting...';
+
+            // Send data to webhook
+            fetch('https://primary-production-fd04.up.railway.app/webhook/9c56cb0a-3cf6-4562-a6b6-d19c25b9ec59', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok');
+                }
+                // Redirect to thank you page
+                window.location.href = 'https://funnel.jordanpaintings.com/thankyou-apttrkr-7626';
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                submitButton.disabled = false;
+                submitButton.textContent = 'Submit';
+                alert('There was an error submitting your form. Please try again.');
+            });
+        }
+
+        msUpdateProgress();
+    </script>
+</body>
+</html>
